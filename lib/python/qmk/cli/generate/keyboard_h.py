@@ -8,8 +8,7 @@ from qmk.path import normpath
 from qmk.info import info_json
 from qmk.commands import dump_lines
 from qmk.keyboard import keyboard_completer, keyboard_folder
-from qmk.constants import COL_LETTERS, ROW_LETTERS, GPL2_HEADER_C_LIKE, GENERATED_HEADER_C_LIKE
-
+from qmk.constants import COL_LETTERS, ROW_LETTERS, GPL2_HEADER_C_LIKE, GENERATED_HEADER_C_LIKE, MATRIX_LABELS
 
 def _generate_layouts(keyboard, kb_info_json):
     """Generates the layouts macros.
@@ -60,6 +59,85 @@ def _generate_layouts(keyboard, kb_info_json):
     return lines
 
 
+def fixed_width_comma(str):
+    str += ","
+    return str.ljust(10)
+
+def _generate_matrices(keyboard, kb_info_json):
+    lines = []
+
+    if 'matrix_size' not in kb_info_json:
+        cli.log.error(f'{keyboard}: Invalid matrix config.')
+        return []
+
+    col_num = kb_info_json['matrix_size']['cols']
+    row_num = kb_info_json['matrix_size']['rows']
+
+    lines.append('')
+    for layout_name, layout_data in kb_info_json['layouts'].items():
+        if layout_data['c_macro']:
+            continue
+
+        if not all('matrix' in key_data for key_data in layout_data['layout']):
+            cli.log.debug(f'{keyboard}/{layout_name}: No or incomplete matrix data!')
+            continue
+
+        layout_keys = []
+        layout_matrix = [['KC_NO'] * col_num for _ in range(row_num)]
+
+        first_shift = True
+        first_alt = True
+        first_ctrl = True
+        first_gui = True
+
+        for key_data in layout_data['layout']:
+            row, col = key_data['matrix']
+
+            if 'label' not in key_data:
+                print("label missing for one or more keys")
+                return []
+
+            suffix = key_data['label'].upper()
+
+            if suffix == "WIN":
+                suffix = "GUI"
+
+            if suffix == "SHIFT":
+                suffix = "L_SHIFT" if first_shift else "R_SHIFT"
+                first_shift = False
+
+            if suffix == "CTRL":
+                suffix = "L_CTRL" if first_ctrl else "R_CTRL"
+                first_ctrl = False
+
+            if suffix == "GUI":
+                suffix = "L_GUI" if first_gui else "R_GUI"
+                first_gui = False
+
+            if suffix == "ALT":
+                suffix = "L_ALT" if first_alt else "R_ALT"
+                first_alt = False
+
+            if suffix in MATRIX_LABELS:
+                suffix = MATRIX_LABELS[suffix]
+
+            identifier = f'LP##_{suffix}'
+            if row >= row_num or col >= col_num:
+                cli.log.error(f'Skipping MATRIX layouts due to {layout_name} containing invalid matrix values')
+                return []
+
+            layout_matrix[row][col] = identifier
+            layout_keys.append(identifier)
+
+        rows = ', \\\n'.join(['    {' + ' '.join(map(fixed_width_comma, row)) + '}' for row in layout_matrix])
+        rows += '  \\'
+
+        lines.append(f'#define MATRIX_{layout_name}(LP) {{ \\')
+        lines.append(rows)
+        lines.append(f'}}')
+    return lines
+
+
 def _generate_keycodes(kb_info_json):
     """Generates keyboard level keycodes.
     """
@@ -99,6 +177,7 @@ def generate_keyboard_h(cli):
 
     keyboard_h = cli.args.include
     dd_layouts = _generate_layouts(cli.args.keyboard, kb_info_json)
+    dd_matricies = _generate_matrices(cli.args.keyboard, kb_info_json)
     dd_keycodes = _generate_keycodes(kb_info_json)
     valid_config = dd_layouts or keyboard_h
 
@@ -109,6 +188,7 @@ def generate_keyboard_h(cli):
     keyboard_h_lines.append('// Layout content')
     if dd_layouts:
         keyboard_h_lines.extend(dd_layouts)
+        keyboard_h_lines.extend(dd_matricies)
     if keyboard_h:
         keyboard_h_lines.append(f'#include "{Path(keyboard_h).name}"')
 

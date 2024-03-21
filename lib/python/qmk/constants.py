@@ -132,6 +132,80 @@ TIME_FORMAT = '%H:%M:%S'
 COL_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijilmnopqrstuvwxyz'
 ROW_LETTERS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnop'
 
+MATRIX_LABELS = {
+    'PRINT SCREEN' : 'PSC',
+    'SCROLL LOCK'  : 'SLK',
+    'PAUSE'        : 'PAU',
+
+    '`'            : 'GRA',
+    '-'            : 'MI',
+    '='            : 'EQ',
+    'BACKSPACE'    : 'BSP',
+    'HOME'         : 'HOM',
+    '['            : 'LB',
+    ']'            : 'RB',
+    '\\'           : 'BSL',
+    'CAPSLOCK'     : 'CAP',
+    ';'            : 'SC',
+    "'"            : 'QT',
+    "ENTER"        : 'ENT',
+    "ENT"          : 'ENT',
+    "PGUP"         : 'PUP',
+    "PAGE UP"      : 'PUP',
+    "PGDN"         : 'PDN',
+    "PAGE DOWN"    : 'PDN',
+
+    ","            : 'CM',
+    "."            : 'DT',
+    "/"            : 'SL',
+
+    "UP"           : 'AUP',
+    "DOWN"         : 'ADN',
+    "LEFT"         : 'AL',
+    "RIGHT"        : 'AR',
+    "INSERT"       : 'INS',
+    "DELETE"       : 'DEL',
+
+    "SPACE"        : 'SP',
+    "L_SPACE"      : 'LSP',
+    "R_SPACE"      : 'RSP',
+
+    "L_SHIFT"      : 'LSH',
+    "R_SHIFT"      : 'RSH',
+    "R_CTL"        : 'RCTL',
+    "L_CTL"        : 'LCTL',
+    "L_CTRL"       : 'LCTL',
+    "R_CTRL"       : 'RCTL',
+    "L_ALT"        : 'LALT',
+    "R_ALT"        : 'RALT',
+    "L_GUI"        : 'LGUI',
+    "R_GUI"        : 'RGUI',
+    "L_WIN"        : 'LGUI',
+    "R_WIN"        : 'RGUI',
+
+    'NUM LOCK'     : 'NLK',
+    'NUMBER LOCK'  : 'NLK',
+    'N_/'          : 'NSL',
+    "N_*"          : 'NAST',
+    'N_-'          : 'NMI',
+    "N_7"          : 'N7',
+    "N_8"          : 'N8',
+    "N_9"          : 'N9',
+    "N_+"          : 'NPL',
+    "N_4"          : 'N4',
+    "N_5"          : 'N5',
+    "N_6"          : 'N6',
+    "N_1"          : 'N1',
+    "N_2"          : 'N2',
+    "N_3"          : 'N3',
+    "N_ENTER"      : 'NENT',
+    "N_ENT"        : 'NENT',
+    "N_0"          : 'N0',
+    "00"           : 'N00',
+    "N_00"         : 'N00',
+    "N_."          : 'NDT',
+}
+
 # Constants that should match their counterparts in make
 BUILD_DIR = environ.get('BUILD_DIR', '.build')
 INTERMEDIATE_OUTPUT_PREFIX = f'{BUILD_DIR}/obj_'
