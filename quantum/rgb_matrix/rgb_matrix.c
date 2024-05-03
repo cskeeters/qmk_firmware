@@ -70,6 +70,8 @@ uint8_t g_rgb_frame_buffer[MATRIX_ROWS][MATRIX_COLS] = {{0}};
 last_hit_t g_last_hit_tracker;
 #endif // RGB_MATRIX_KEYREACTIVE_ENABLED
 
+bool (*rgb_mode_callback)(effect_params_t* params) = NULL;
+
 // internals
 static bool            suspend_state     = false;
 static uint8_t         rgb_last_enable   = UINT8_MAX;
