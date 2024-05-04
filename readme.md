@@ -4,7 +4,6 @@ This is a fork of [qmk/qmk_firmware](https://github.com/qmk/qmk_firmware).  This
 
   * matrix - code changes to support the generation of MATRIX_LAYOUT definitions in default-keyboard.h
   * cskeeters - my personal keymap, which depends on matrix
-  * kbd67 - my personal keymap, which depends on matrix and adds some helpers for using rgb
 
 Active branches will be rebased on qmk/master and force pushed.
 
